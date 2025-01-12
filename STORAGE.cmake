@@ -4,5 +4,6 @@ SET(BRINGAUTO_REPOSITORY_URL_TEMPLATE "https://gitlab.bringauto.com/bringauto-pu
     "Package template for an URI generation"
 )
 
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/BA_PACKAGE_VARS.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/BA_PACKAGE.cmake")
 INCLUDE("${CMAKE_CURRENT_LIST_DIR}/BA_PACKAGE_DEPS.cmake")

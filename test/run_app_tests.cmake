@@ -1,3 +1,8 @@
+#
+# The system builds the app/ and check
+# if all installed dependencies are in place and all
+# RPATH/RUNPATH are set up correctly
+#
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 
@@ -7,6 +12,7 @@ ENDIF()
 
 FIND_PACKAGE(CMLIB COMPONENTS CMDEF REQUIRED)
 
+##
 #
 # Function cleans up tests directory
 #
@@ -22,6 +28,7 @@ FUNCTION(DEPSTEST_CLEANUP dir_to_cleanup)
     ENDIF()
 ENDFUNCTION()
 
+##
 #
 # Function builds all needed dependnecies, installs them
 # and test if testapp install directory is consistent
@@ -81,21 +88,23 @@ FUNCTION(DEPSTEST_RUN_AND_EVALUATE testbase_path testfile_name app_build_dir app
     ENDFOREACH()
 ENDFUNCTION()
 
+##
 #
 # Function check if the RUNPATH for binary and all shared libraries
 # is set as expected.
-# If not FATAL_ERROR is ommited.
+# If not FATAL_ERROR is omitted.
 #
 # <function> (
 #       app_install_dir // where the tesapp is installed
 # )
 #
 FUNCTION(DEPSTEST_CHECK_RUNPATH app_install_dir)
+    MESSAGE(STATUS "Checking R/RUNPATH.")
     FIND_PROGRAM(readelf readelf REQUIRED)
     SET(bin_dir "${app_install_dir}/${CMDEF_BINARY_INSTALL_DIR}")
     SET(lib_dir "${app_install_dir}/${CMDEF_LIBRARY_INSTALL_DIR}")
     FILE(GLOB binfile_list "${bin_dir}/*")
-    FILE(GLOB libfile_list "${lib_dir}/*")
+    FILE(GLOB libfile_list LIST_DIRECTORIES FALSE "${lib_dir}/*")
 
     FILE(RELATIVE_PATH expected_bin_file_path "${bin_dir}" "${lib_dir}")
     SET(expected_binfile_runpath "$ORIGIN/${expected_bin_file_path}")
@@ -140,6 +149,35 @@ FUNCTION(DEPSTEST_CHECK_RUNPATH app_install_dir)
     ENDFOREACH()
 ENDFUNCTION()
 
+##
+#
+# It checks if there are no simlinks which points
+# to absolute file/dir path
+#
+# <function>(
+#       app_install_dir // where the tesapp is installed
+# )
+#
+FUNCTION(DEPSTEST_CHECK_SYMLINKS app_install_dir)
+    MESSAGE(STATUS "Checking symlinks.")
+    SET(lib_dir "${app_install_dir}/${CMDEF_LIBRARY_INSTALL_DIR}")
+    FILE(GLOB_RECURSE libfile_list LIST_DIRECTORIES FALSE "${lib_dir}/*")
+    FOREACH(file IN LISTS libfile_list)
+        IF(NOT IS_SYMLINK file)
+            CONTINUE()
+        ENDIF()
+        GET_FILENAME_COMPONENT(real_path "${file}" REALPATH)
+        IF(NOT EXISTS "${real_path}")
+            MESSAGE(FATAL_ERROR "Broken symlink detected: ${file} -> ${symlink_target}")
+        ENDIF()
+        FILE(READ_SYMLINK "${file}" symlink_target)
+        IF(IS_ABSOLUTE symlink_target)
+            MESSAGE(FATAL_ERROR "Absolute symlink detected: ${file} -> ${symlink_target}\nAll symlinks must use relative paths.")
+        ENDIF()
+    ENDFOREACH()
+ENDFUNCTION()
+
+
 
 OPTION(TEST_WITH_DESTDIR "If ON it uses/defines DESTDIR while running set of tests. If OFF do not use DESTDIR." OFF)
 SET(TEST_BASE_PATH    "${CMAKE_CURRENT_LIST_DIR}/app/tests_list")
@@ -162,5 +200,6 @@ FOREACH(testfile_name IN LISTS tests_name_list)
     DEPSTEST_CLEANUP("${CMAKE_CURRENT_LIST_DIR}")
     DEPSTEST_RUN_AND_EVALUATE("${TEST_BASE_PATH}" ${testfile_name} "${TESTAPP_BUILD_DIR}" "${TESTAPP_INSTALL_DIR}")
     DEPSTEST_CHECK_RUNPATH("${TESTAPP_INSTALL_DIR}")
+    DEPSTEST_CHECK_SYMLINKS("${TESTAPP_INSTALL_DIR}")
 ENDFOREACH()
 DEPSTEST_CLEANUP("${CMAKE_CURRENT_LIST_DIR}")

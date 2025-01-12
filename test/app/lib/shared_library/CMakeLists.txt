@@ -1,10 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 
-SET(PROJECT_NAME shared_library)
+SET(PROJECT_NAME shared-library)
 PROJECT(${PROJECT_NAME} LANGUAGES C)
 
 IF(NOT DEFINED LIBRARY_VERSION)
-    MESSAGE(FATAL_ERROR "Please specify PROJECT_VERSION in format major.minr.patch")
+    MESSAGE(FATAL_ERROR "Please specify LIBRARY_VERSION in format major.minor.patch")
 ENDIF()
 IF(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
     MESSAGE(FATAL_ERROR "Only supported build type is Release! (specify by CMAKE_BUILD_TYPE)")
@@ -29,15 +29,8 @@ SET_TARGET_PROPERTIES(${PROJECT_NAME}-shared
         VERSION   ${LIBRARY_VERSION}
 )
 
-SET(old_install_dir ${CMDEF_LIBRARY_INSTALL_DIR})
-SET(CMDEF_LIBRARY_INSTALL_DIR "${install_dir}"
-    CACHE STRING "Overriden"
-    FORCE
-)
-CMDEF_INSTALL(TARGET ${PROJECT_NAME}-shared)
-SET(CMDEF_LIBRARY_INSTALL_DIR "${old_install_dir}"
-    CACHE STRING "Overriden"
-    FORCE
+CMDEF_INSTALL(TARGET ${PROJECT_NAME}-shared
+    NAMESPACE ${PROJECT_NAME}-shared::
 )
 
 # Create a package

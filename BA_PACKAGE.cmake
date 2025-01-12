@@ -20,7 +20,7 @@ FIND_PACKAGE(CMLIB COMPONENTS CMUTIL CMDEF)
 # variant are equal)
 #
 # PLATFORM_STRING_MODE - mode of platform string construction (platform string represents
-# id of the target platfrom for which we build...).
+# id of the target platform for which we build...).
 #   - "aby_machine" - inform packager we use package that is not bound to the target architecture.
 #
 # OUTPUT_PATH_VAR - name of the variable where the absolute path of the package root will be stored. 

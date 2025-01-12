@@ -41,9 +41,15 @@ FUNCTION(CHECK_BUILD_DEPENDENCY_AGAINST_LIST file_list_getter directory_to_check
     )
     CMAKE_LANGUAGE(CALL ${file_list_getter} expected_file_list)
     FOREACH(file IN LISTS _files)
+        MESSAGE(STATUS "found file: ${file}")
+    ENDFOREACH()
+    FOREACH(file IN LISTS expected_file_list) 
+        MESSAGE(STATUS "expected file: ${file}")
+    ENDFOREACH()
+    FOREACH(file IN LISTS _files)
         LIST(FIND expected_file_list "${file}" found)
         IF(found EQUAL -1)
-            MESSAGE(FATAL_ERROR "File not found ${file}")
+            MESSAGE(FATAL_ERROR "The file was not found: '${file}'")
         ENDIF()
     ENDFOREACH()
 ENDFUNCTION()
@@ -72,8 +78,8 @@ IF(NOT COMMAND TEST_PRERUN_GET_EXPECTED_DEPENDENCY_FILE_LIST)
 ENDIF()
 TEST_PRERUN(
     VERSION     "1.2.3"
-    INSTALL_DIR "${DEPENDENCY_INSTALL_DIR}/lib/shared_library_for_prerun"
-    LIBRARY_NAME shared_library_for_prerun
+    INSTALL_DIR "${DEPENDENCY_INSTALL_DIR}/lib/shared-library-for-prerun"
+    LIBRARY_NAME shared-library-for-prerun-shared
 )
 CHECK_BUILD_DEPENDENCY_AGAINST_LIST(
     TEST_PRERUN_GET_EXPECTED_DEPENDENCY_FILE_LIST
@@ -83,13 +89,13 @@ CHECK_BUILD_DEPENDENCY_AGAINST_LIST(
 
 
 LIST(APPEND CMAKE_PREFIX_PATH "${DEPENDENCY_INSTALL_DIR}")
-FIND_PACKAGE(shared_library REQUIRED)
+FIND_PACKAGE(shared-library-shared REQUIRED)
 
-ADD_LIBRARY(shared_library_for_prerun-shared SHARED IMPORTED)
-SET_TARGET_PROPERTIES(shared_library_for_prerun-shared
+ADD_LIBRARY(shared-library-for-prerun-shared SHARED IMPORTED)
+SET_TARGET_PROPERTIES(shared-library-for-prerun-shared
     PROPERTIES
-        IMPORTED_LOCATION ${DEPENDENCY_INSTALL_DIR}/${CMDEF_LIBRARY_INSTALL_DIR}/shared_library_for_prerun/libshared_library_for_prerun.so.1.2.3
-        IMPORTED_SONAME shared_library_for_prerun.so.1.2.3
+        IMPORTED_LOCATION ${DEPENDENCY_INSTALL_DIR}/${CMDEF_LIBRARY_INSTALL_DIR}/shared-library-for-prerun/libshared-library-for-prerun-shared.so.1.2.3
+        IMPORTED_SONAME shared-library-for-prerun-shared.so.1.2.3
 
 )
 
@@ -98,9 +104,11 @@ CMDEF_ADD_EXECUTABLE(
     SOURCES main.c
     VERSION ${PROJECT_VERSION}
 )
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} PUBLIC shared_library-shared shared_library_for_prerun-shared)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} PUBLIC
+    shared-library-shared::shared-library-shared
+    shared-library-for-prerun-shared)
 
-CMDEF_INSTALL(TARGET ${PROJECT_NAME})
+CMDEF_INSTALL(TARGET ${PROJECT_NAME} NAMESPACE ${PROJECT_NAME}::)
 
 # Create a package
 CMDEF_PACKAGE(
@@ -110,7 +118,7 @@ CMDEF_PACKAGE(
 
 
 
-INCLUDE("${CMAKE_CURRENT_LIST_DIR}/../../BA_PACKAGE_DEPS.cmake")
+INCLUDE("${CMAKE_CURRENT_LIST_DIR}/../../STORAGE.cmake")
 
 BA_PACKAGE_DEPS_INSTALL_IMPORTED(
     ${PROJECT_NAME}

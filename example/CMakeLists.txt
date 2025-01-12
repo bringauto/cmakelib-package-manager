@@ -3,8 +3,8 @@
 #
 #
 
-PROJECT(BA_PACKAGE_EXAMPLE CXX)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.18)
+PROJECT(BA_PACKAGE_EXAMPLE CXX)
 
 #
 # We initialize CMLIB library.
@@ -45,7 +45,9 @@ CMDEF_ADD_EXECUTABLE(
 TARGET_LINK_LIBRARIES(test PUBLIC nlohmann_json::nlohmann_json CURL::libcurl)
 
 # Install created target
-CMDEF_INSTALL(TARGET test)
+CMDEF_INSTALL(TARGET test
+    NAMESPACE test::
+)
 
 # Install all shared library dependencies needed for json_target
 # and update RUNPATH.

@@ -1,6 +1,5 @@
 #
 #
-#
 
 #
 # More documentation can be found inside the README
@@ -8,20 +7,20 @@
 # Expected generated dependency set structure:
 #
 # ${DEPENDENCY_INSTALL_DIR}
-#  ├── cmake
-#  │   ├── shared_libraryConfig.cmake
-#  │   ├── shared_libraryConfigVersion.cmake
-#  │   ├── shared_library-shared.cmake
-#  │   └── shared_library-shared-release.cmake
 #  ├── include
 #  │   └── shared_out_of_dir_symlink.h
 #  └── lib
-#      ├── libshared_library_for_prerun.so
-#      ├── shared_library
-#      │   ├── libshared_library.so -> libshared_library.so.5.67.1
-#      │   └── libshared_library.so.5.67.1
-#      └── shared_library_for_prerun
-#          └── libshared_library_for_prerun.so.1.2.3 -> /home/h/Documents/work/bringauto/packages/package-tracker/test/DependencyRoot/lib/shared_library_for_prerun/../libshared_library_for_prerun.so
+#      ├── cmake
+#      │   └── shared-library-shared
+#      │       ├── shared-library-shared.cmake
+#      │       ├── shared-library-sharedConfig.cmake
+#      │       ├── shared-library-sharedConfigVersion.cmake
+#      │       └── shared-library-shared-release.cmake
+#      ├── libshared-library-for-prerun-shared.so
+#      ├── libshared-library-shared.so -> libshared-library-shared.so.5.67.1
+#      ├── libshared-library-shared.so.5.67.1
+#      └── shared-library-for-prerun
+#          └── libshared-library-for-prerun-shared.so.1.2.3 -> <INSTALL_DIR>/lib/shared-library-for-prerun/../libshared-library-for-prerun-shared.so
 #
 FUNCTION(TEST_PRERUN)
     CMLIB_PARSE_ARGUMENTS(
@@ -85,15 +84,15 @@ ENDFUNCTION()
 #
 MACRO(TEST_PRERUN_GET_EXPECTED_DEPENDENCY_FILE_LIST list_var)
     LIST(APPEND ${list_var}
-        "cmake/shared_libraryConfig.cmake"
-        "cmake/shared_libraryConfigVersion.cmake"
-        "cmake/shared_library-shared.cmake"
-        "cmake/shared_library-shared-release.cmake"
+        "lib/cmake/shared-library-shared/shared-library-sharedConfig.cmake"
+        "lib/cmake/shared-library-shared/shared-library-sharedConfigVersion.cmake"
+        "lib/cmake/shared-library-shared/shared-library-shared.cmake"
+        "lib/cmake/shared-library-shared/shared-library-shared-release.cmake"
         "include/shared_out_of_dir_symlink.h"
-        "lib/libshared_library_for_prerun.so"
-        "lib/shared_library/libshared_library.so"
-        "lib/shared_library/libshared_library.so.5.67.1"
-        "lib/shared_library_for_prerun/libshared_library_for_prerun.so.1.2.3"
+        "lib/libshared-library-for-prerun-shared.so"
+        "lib/libshared-library-shared.so"
+        "lib/libshared-library-shared.so.5.67.1"
+        "lib/shared-library-for-prerun/libshared-library-for-prerun-shared.so.1.2.3"
     )
 ENDMACRO()
 
@@ -107,27 +106,28 @@ ENDMACRO()
 # ${INSTALL_DIR}
 #   ├── bin
 #   │   └── MyTestApp
-#   ├── cmake
-#   │   ├── MyTestApp.cmake
-#   │   ├── MyTestAppConfig.cmake
-#   │   ├── MyTestAppConfigVersion.cmake
-#   │   └── MyTestApp-release.cmake
 #   └── lib
-#       ├── libshared_library_for_prerun.so -> libshared_library_for_prerun.so.1.2.3
-#       ├── libshared_library_for_prerun.so.1.2.3
-#       ├── libshared_library.so -> libshared_library.so.5.67.1
-#       └── libshared_library.so.5.67.1
+#       ├── cmake
+#       │   └── MyTestApp
+#       │       ├── MyTestApp.cmake
+#       │       ├── MyTestAppConfig.cmake
+#       │       ├── MyTestAppConfigVersion.cmake
+#       │       └── MyTestApp-release.cmake
+#       ├── libshared-library-for-prerun-shared.so
+#       ├── libshared-library-for-prerun-shared.so.1.2.3 -> libshared-library-for-prerun-shared.so
+#       ├── libshared-library-shared.so -> libshared-library-shared.so.5.67.1
+#       └── libshared-library-shared.so.5.67.1
 #
 MACRO(TEST_GET_EXPECTED_INSTALLED_FILES_LIST list_var)
     LIST(APPEND ${list_var}
         "bin/MyTestApp"
-        "cmake/MyTestApp.cmake"
-        "cmake/MyTestAppConfig.cmake"
-        "cmake/MyTestAppConfigVersion.cmake"
-        "cmake/MyTestApp-release.cmake"
-        "lib/libshared_library_for_prerun.so"
-        "lib/libshared_library_for_prerun.so.1.2.3"
-        "lib/libshared_library.so"
-        "lib/libshared_library.so.5.67.1"
+        "lib/cmake/MyTestApp/MyTestApp.cmake"
+        "lib/cmake/MyTestApp/MyTestAppConfig.cmake"
+        "lib/cmake/MyTestApp/MyTestAppConfigVersion.cmake"
+        "lib/cmake/MyTestApp/MyTestApp-release.cmake"
+        "lib/libshared-library-for-prerun-shared.so"
+        "lib/libshared-library-for-prerun-shared.so.1.2.3"
+        "lib/libshared-library-shared.so"
+        "lib/libshared-library-shared.so.5.67.1"
     )
 ENDMACRO()

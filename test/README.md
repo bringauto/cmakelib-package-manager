@@ -52,7 +52,7 @@ Because tests for multiple use cases are needed the installed dependencies must 
 
 ### Use Case / Test files
 
-Directory `app/tests_list` contains files where each of which represents one use case that needs to be tested. The file from `app/tests_list` is reffered as `test file`.
+Directory `app/tests_list` contains files where each of which represents one use case that needs to be tested. The file from `app/tests_list` is referred as `test file`.
 
 Each `test file` shall to define following CMake functions/macros
 
@@ -61,7 +61,7 @@ Each `test file` shall to define following CMake functions/macros
 # Function is used for alternate of library installation according of the use case. 
 # (rename files, create/delete symlinks, move files, ...).
 #
-# Function is called exactly once for exacly one `Application Library`
+# Function is called exactly once for exactly one `Application Library`
 #
 # VERSION - library version name if the library has versioned SONAME
 # example: library file name for <version> and <library_name>: lib<library_name>.so.<version> 
@@ -116,3 +116,9 @@ TEST_GET_EXPECTED_INSTALLED_FILES_LIST(...)
 ## Test Run Workflow
 
 ![BringAuto Packager Test Activity](img/BAPackageTestActivity.svg)
+
+## TODO
+
+- Rename `shared_library` and `shared_library_for_prerun`
+  to `library` and `library_for_prerun` to avoid duplicities.
+  (system automatically add -shared suffix to the resulting library names...)

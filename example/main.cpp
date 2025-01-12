@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     if (!curl) {
         return 1;
     }
-    curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/whoshuu/cpr/contributors?anon=true&key=value");
+    curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/bringauto/package-tracker/contributors?anon=true&key=value");
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl, CURLOPT_USERPWD, "user:pass");
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.79.1");
@@ -33,6 +33,8 @@ int main(int argc, char **argv) {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeFunction);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_string);
     curl_easy_setopt(curl, CURLOPT_HEADERDATA, &header_string);
+ 
+    curl_easy_perform(curl);
     
     char* url;
     long response_code;
@@ -40,11 +42,13 @@ int main(int argc, char **argv) {
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
     curl_easy_getinfo(curl, CURLINFO_TOTAL_TIME, &elapsed);
     curl_easy_getinfo(curl, CURLINFO_EFFECTIVE_URL, &url);
-    
-    curl_easy_perform(curl);
+
+    std::cout << "response_code: " << response_code << std::endl;
+    std::cout << "elapsed:       " << elapsed << std::endl;
+    std::cout << "effective url: " << url << std::endl;
+
     curl_easy_cleanup(curl);
     curl = NULL;
-
     
     return 0;
 }
